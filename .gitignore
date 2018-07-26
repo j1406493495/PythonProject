@@ -1,6 +1,7 @@
 .idea
 UFOGame/.idea
 UFOGame/venv
+UFOGame/__pycache__
 
 firstPycharm/
 geekbangpython/
