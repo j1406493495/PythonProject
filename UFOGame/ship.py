@@ -17,9 +17,9 @@ class Ship:
         self.moving_left = False
 
     def update(self):
-        if self.moving_right:
+        if self.moving_right and self.rect.right < self.screen_rect.right:
             self.rect.centerx += self.ai_settings.ship_speed_factor
-        elif self.moving_left:
+        elif self.moving_left and self.rect.left > 0:
             self.rect.centerx -= self.ai_settings.ship_speed_factor
 
     def blitme(self):
