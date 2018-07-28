@@ -16,6 +16,10 @@ def run_game():
 
     ship = Ship(screen, ai_settings)
     bullets = Group()
+    aliens = Group()
+
+    # 创建外星人群
+    gf.create_fleet(ai_settings, screen, aliens)
 
     # 开始游戏主循环
     while True:
@@ -23,7 +27,7 @@ def run_game():
         ship.update()
         bullets.update()
         gf.update_bullets(bullets)
-        gf.update_screen(ai_settings, screen, ship, bullets)
+        gf.update_screen(ai_settings, screen, ship, aliens, bullets)
 
         # 让最新绘制的屏幕可见
         pygame.display.flip()

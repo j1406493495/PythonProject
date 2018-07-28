@@ -10,6 +10,8 @@ def check_keydown_events(event, ship, ai_settings, screen, bullets):
         ship.moving_left = True
     elif event.key == pygame.K_SPACE:
         fire_bullet(ai_settings, screen, ship, bullets)
+    elif event.key == pygame.K_q:
+        sys.exit()
 
 
 def fire_bullet(ai_settings, screen, ship, bullets):
@@ -38,13 +40,14 @@ def check_events(ship, ai_settings, screen, bullets):
 
 
 # 每次循环时都重会背景
-def update_screen(ai_settings, screen, ship, bullets):
+def update_screen(ai_settings, screen, ship, aliens, bullets):
     screen.fill(ai_settings.bg_color)
     # 在飞船和外星人后面重绘所有子弹
     for bullet in bullets.sprites():
         bullet.draw_bullet()
 
     ship.blitme()
+    aliens.draw(screen)
     pygame.display.flip()
 
 
