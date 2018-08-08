@@ -1,6 +1,7 @@
 import pygame
 from pygame.sprite import Sprite
 
+
 class Alien(Sprite):
     def __init__(self, ai_settings, screen):
         """初始化外星人并设置其起始位置"""
