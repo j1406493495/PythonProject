@@ -64,7 +64,7 @@ def update_bullets(ai_settings, screen, ship, aliens, bullets):
     if len(aliens) == 0:
         # 删除现有的子弹并新建一群外星人
         bullets.empty()
-        create_fleet(ai_settings, screen, ship, aliens)
+        create_fleet(ai_settings, screen, aliens)
 
 
 def create_fleet(ai_settings, screen, aliens):
