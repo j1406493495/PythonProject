@@ -3,6 +3,10 @@ UFOGame/.idea
 UFOGame/venv
 UFOGame/__pycache__
 
+crawler/.idea
+crawler/venv
+crawler/__pycache__
+
 firstPycharm/
 geekbangpython/
 python/
