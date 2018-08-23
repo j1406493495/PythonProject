@@ -36,7 +36,24 @@ def save_movie(url):
         pic = item.find('img')['src']
         print(pic)
 
+        hd = item.find('div', "hd")
+        title_main = hd.find('span', "title").string
+        title_other = hd.find('span', "other").string
+        print("title_main == " + title_main)
+        print("title_other == " + title_other)
 
-for i in range(0, 10):
-    url = "https://movie.douban.com/top250?start=" + str(i * 25) + "&filter="
-    save_movie(url)
+        bd = item.find('div', "bd")
+        actor_info = bd.p.get_text("", strip=True)
+        star = bd.find('span', "rating_num").string
+        star_people = bd.find('span', "rating_num").next_sibling.next_sibling.next_sibling.next_sibling.string
+        quote = bd.find('p', "quote").get_text("", strip=True)
+        print("actor_info == " + actor_info)
+        print("star == " + star)
+        print(star_people)
+        print("quote == " + quote)
+
+
+save_movie("https://movie.douban.com/top250?start=0&filter=")
+# for i in range(0, 10):
+#     url = "https://movie.douban.com/top250?start=" + str(i * 25) + "&filter="
+#     save_movie(url)
