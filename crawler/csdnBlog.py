@@ -51,25 +51,6 @@ class CSDNSpider:
             "Host": "blog.csdn.net"
         }
 
-    # 求总页数
-    def getPages(self):
-        req = urllib.request.Request(url=self.url, headers=self.headers)
-        page = urllib.request.urlopen(req)
-
-        # 从我的csdn博客主页抓取的内容是压缩后的内容，先解压缩
-        data = page.read()
-        data = ungzip(data)
-        data = data.decode('utf-8')
-
-        # 得到BeautifulSoup对象
-        soup = BeautifulSoup(data, 'html5lib')
-        # 计算我的博文总页数
-        tag = soup.find('div', "pagelist")
-        pagesData = tag.span.get_text()
-        # 输出392条  共20页，找到其中的数字
-        pagesNum = re.findall(re.compile(pattern=r'共(.*?)页'), pagesData)[0]
-        return pagesNum
-
     # 设置要抓取的博文页面
     def setPage(self, idx):
         self.url = self.url[0:self.url.rfind('/') + 1] + str(idx)
@@ -90,6 +71,7 @@ class CSDNSpider:
         items = soup.find_all('div', "article-item-box csdn-tracking-statistics")
         for item in items:
             # 标题、链接、日期、阅读次数、评论个数
+            item.a.span.extract()
             title = item.a.get_text()
             link = item.a.get('href')
             writeTime = item.find('span', "date").get_text()
@@ -108,7 +90,7 @@ class CSDNSpider:
 cs = CSDNSpider()
 # 求取
 # pagesNum = int(cs.getPages())
-pagesNum = 50
+pagesNum = 5
 print("博文总页数： ", pagesNum)
 
 for idx in range(pagesNum):
