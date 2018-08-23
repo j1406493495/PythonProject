@@ -87,18 +87,20 @@ class CSDNSpider:
 
         soup = BeautifulSoup(data, "html5lib")
         # 找到所有的博文代码模块
-        items = soup.find_all('div', "list_item article_item")
+        items = soup.find_all('div', "article-item-box csdn-tracking-statistics")
         for item in items:
             # 标题、链接、日期、阅读次数、评论个数
-            title = item.find('span', "link_title").a.get_text()
-            link = item.find('span', "link_title").a.get('href')
-            writeTime = item.find('span', "link_postdate").get_text()
-            readers = re.findall(re.compile(r'\((.*?)\)'), item.find('span', "link_view").get_text())[0]
-            comments = re.findall(re.compile(r'\((.*?)\)'), item.find('span', "link_comments").get_text())[0]
+            title = item.a.get_text()
+            link = item.a.get('href')
+            writeTime = item.find('span', "date").get_text()
+            readers = item.find_all('span', 'read-num')[0].get_text()
+            comments = item.find_all('span', 'read-num')[1].get_text()
 
-            ret.append('日期：' + writeTime + '\n标题：' + title
-                       + '\n链接：http://blog.csdn.net' + link
-                       + '\n' + '阅读：' + readers + '\t评论：' + comments + '\n')
+            ret.append('日期：' + writeTime
+                       + '\n标题：' + str(title).strip()
+                       + '\n链接：' + link
+                       + '\n' + readers
+                       + '\t' + comments + '\n')
         return ret
 
 
