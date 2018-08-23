@@ -15,8 +15,6 @@ def save_file(info):
     f.close()
 
 
-
-
 def save_pic(path):
     target_path = "/Users/wong/Desktop/doubanImg"
 
