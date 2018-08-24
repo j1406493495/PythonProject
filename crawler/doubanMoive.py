@@ -1,6 +1,8 @@
 import urllib.request, gzip
 from bs4 import BeautifulSoup
 
+movie_info = ''
+
 
 # 解压缩数据
 def ungzip(data):
@@ -11,6 +13,13 @@ def ungzip(data):
     except:
         print("未经压缩，无需解压...")
     return data
+
+
+def save_movie_to_file():
+    path = "/Users/wong/Desktop/movie.txt"
+    file = open(path, 'wb')
+    file.write(movie_info.encode('utf-8'))
+    file.close()
 
 
 def save_movie(url):
@@ -34,26 +43,39 @@ def save_movie(url):
     items = soup.find_all('div', "item")
     for item in items:
         pic = item.find('img')['src']
-        print(pic)
+        # print(pic)
 
         hd = item.find('div', "hd")
         title_main = hd.find('span', "title").string
         title_other = hd.find('span', "other").string
-        print("title_main == " + title_main)
-        print("title_other == " + title_other)
+        # print("title_main == " + title_main)
+        # print("title_other == " + title_other)
 
         bd = item.find('div', "bd")
         actor_info = bd.p.get_text("", strip=True)
         star = bd.find('span', "rating_num").string
         star_people = bd.find('span', "rating_num").next_sibling.next_sibling.next_sibling.next_sibling.string
-        quote = bd.find('p', "quote").get_text("", strip=True)
-        print("actor_info == " + actor_info)
-        print("star == " + star)
-        print(star_people)
-        print("quote == " + quote)
+        quoteNode = bd.find('p', "quote")
+        quote = ''
+        if quoteNode is not None:
+            quote = quoteNode.get_text("", strip=True)
+        # print("actor_info == " + actor_info)
+        # print("star == " + star)
+        # print(star_people)
+        # print("quote == " + quote)
+
+        global movie_info
+        movie_info += '==============\n'
+        movie_info += pic + '\n'
+        movie_info += title_main + title_other + '\n'
+        movie_info += actor_info + '\n'
+        movie_info += '豆瓣评分：' + star + '\n'
+        movie_info += star_people + '\n'
+        movie_info += quote + '\n'
 
 
-save_movie("https://movie.douban.com/top250?start=0&filter=")
-# for i in range(0, 10):
-#     url = "https://movie.douban.com/top250?start=" + str(i * 25) + "&filter="
-#     save_movie(url)
+# save_movie("https://movie.douban.com/top250?start=0&filter=")
+for i in range(0, 10):
+    url = "https://movie.douban.com/top250?start=" + str(i * 25) + "&filter="
+    save_movie(url)
+    save_movie_to_file()
