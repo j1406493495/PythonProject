@@ -1,4 +1,4 @@
-import urllib.request, gzip
+import urllib.request, gzip, os
 from bs4 import BeautifulSoup
 
 movie_info = ''
@@ -13,6 +13,19 @@ def ungzip(data):
     except:
         print("未经压缩，无需解压...")
     return data
+
+
+def save_pic(path):
+    target_path = "/Users/wong/Desktop/movie_img"
+
+    # 检测当前路径的有效性
+    if not os.path.isdir(target_path):
+        os.mkdir(target_path)
+
+    # 设置每个图片的路径
+    pos = path.rindex('/')
+    t = os.path.join(target_path, path[pos + 1:])
+    return t
 
 
 def save_movie_to_file():
@@ -43,6 +56,7 @@ def save_movie(url):
     items = soup.find_all('div', "item")
     for item in items:
         pic = item.find('img')['src']
+        urllib.request.urlretrieve(pic, save_pic(pic))
         # print(pic)
 
         hd = item.find('div', "hd")
