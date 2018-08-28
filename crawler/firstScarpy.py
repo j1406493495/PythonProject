@@ -11,13 +11,18 @@ class QuotesSpider(scrapy.Spider):
             'http://quotes.toscrape.com/page/1/',
             'http://quotes.toscrape.com/page/2/',
         ]
+        print(urls)
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse)
 
     # 用于从网页文本中抓取相应内容，我们需要根据自己的需要重写该方法
     def parse(self, response):
+        print(response)
         page = response.url.split("/")[-2]
+        print(page)
         filename = 'quotes-%s.html' % page
         with open(filename, 'wb') as f:
             f.write(response.body)
         self.log('Saved file %s' % filename)
+
+
