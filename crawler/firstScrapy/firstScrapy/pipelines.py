@@ -12,7 +12,7 @@ class FirstscrapyPipeline(object):
     def open_spider(self, spider):
         self.con = sqlite3.connect('zufang.sqlite')
         self.cu = self.con.cursor()
-    
+
     def process_item(self, item, spider):
         print(spider.name, 'pipeline')
         insert_sql = "insert into zufang (title, money) values('{}', '{}')".format(item['title'], item['money'])
@@ -21,5 +21,5 @@ class FirstscrapyPipeline(object):
         self.con.commit()
         return item
 
-    def spider_close(self, spider):
+    def close_spider(self, spider):
         self.con.close()
