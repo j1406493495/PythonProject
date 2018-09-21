@@ -8,9 +8,13 @@ class NameSpider(scrapy.Spider):
 
     def parse_introduction(self, response):
         introduction_item = IntroductionItem()
+        introduction_item['level'] = 1
         introduction_item['name'] = response.xpath('//h1[@class="page-header__title"]/text()').extract()
         introduction_item['avator'] = response.xpath('//img[@class="pi-image-thumbnail"]/@src').extract()
         introduction_item['main_info'] = response.xpath('//div[@id="mw-content-text"]/p[1]//text()').extract()
+
+        tree = response.xpath('//table[@class="familyTree"]//a/text()').extract()
+        print('tree ==== ' + str(tree))
         
         yield introduction_item
 

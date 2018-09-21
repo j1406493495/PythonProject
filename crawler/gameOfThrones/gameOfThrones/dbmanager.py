@@ -13,6 +13,7 @@ class BaseModel(Model):
 
 
 class Role(BaseModel):
+    level = IntegerField()
     name = TextField()
     avator = TextField()
     main_info = TextField()
@@ -35,7 +36,7 @@ def save_roles(item):
     main_info_str = re.sub('\[\d+\]', '', main_info_str)
 
     with db.atomic():
-        Role.create(name=name_str, avator=avator_str, main_info=main_info_str)
+        Role.create(level=item['level'], name=name_str, avator=avator_str, main_info=main_info_str)
 
     #     for i in roles:
     #         Role.create(**i)

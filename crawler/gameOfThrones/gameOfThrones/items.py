@@ -9,6 +9,7 @@ import scrapy
 
 
 class IntroductionItem(scrapy.Item):
+    level = scrapy.Field()
     name = scrapy.Field()
     avator = scrapy.Field()
     main_info = scrapy.Field()
