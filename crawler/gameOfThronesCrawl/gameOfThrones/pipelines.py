@@ -10,11 +10,11 @@ from gameOfThrones import dbmanager
 class IntroductionPipeline(object):
     def open_spider(self, spider):
         print('open ====')
-        role = dbmanager.Role()
-        dbmanager.create_table(role)
+        pov = dbmanager.Pov()
+        dbmanager.create_table(pov)
 
     def process_item(self, item, spider):
-        dbmanager.save_roles(item)
+        dbmanager.save_povs(item)
         return item
 
     def close_spider(self, spider):

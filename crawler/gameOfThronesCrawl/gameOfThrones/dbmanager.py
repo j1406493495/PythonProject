@@ -12,23 +12,23 @@ class BaseModel(Model):
         database = db
 
 
-class Role(BaseModel):
+class Pov(BaseModel):
     level = IntegerField()
     name = TextField()
     avator = TextField()
     main_info = TextField()
 
     class Meta:
-        db_table = 'role'
-        order_by = ('role_id', 'name')
+        db_table = 'pov'
+        order_by = ('level', 'name')
 
 
 def create_table(table):
     if not table.table_exists():
         table.create_table()
 
-def save_roles(item):
-    print('save_roles ===== ' + str(item))
+def save_povs(item):
+    print('save_povs ===== ' + str(item))
     name_str = item['name'][0]
     avator_str = item['avator'][0]
     main_info_str = ''.join(item['main_info'])
@@ -36,10 +36,10 @@ def save_roles(item):
     main_info_str = re.sub('\[\d+\]', '', main_info_str)
 
     with db.atomic():
-        Role.create(level=item['level'], name=name_str, avator=avator_str, main_info=main_info_str)
+        Pov.create(level=item['level'], name=name_str, avator=avator_str, main_info=main_info_str)
 
-    #     for i in roles:
-    #         Role.create(**i)
-        # for i in range(0, len(roles), 100):
-            # Role.insert_many(roles[i: i+100).execute()
+    #     for i in povs:
+    #         Pov.create(**i)
+        # for i in range(0, len(povs), 100):
+            # .insert_many(povs[i: i+100).execute()
 
