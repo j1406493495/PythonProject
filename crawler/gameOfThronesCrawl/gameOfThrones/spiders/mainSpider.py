@@ -17,31 +17,19 @@ class NameSpider(scrapy.Spider):
 
         for href in level_one_pov_hrefs:
             introduction_url = prefix_url + href
-            yield scrapy.Request(introduction_url, callback=self.parse_level_one_pov)
+            yield scrapy.Request(introduction_url, meta={'level':1}, callback=self.parse_pov)
 
         for href in level_two_pov_hrefs:
             introduction_url = prefix_url + href
-            yield scrapy.Request(introduction_url, callback=self.parse_level_two_pov)
+            yield scrapy.Request(introduction_url, meta={'level':2}, callback=self.parse_pov)
 
 
-    def parse_level_one_pov(self, response):
+    def parse_pov(self, response):
         introduction_item = IntroductionItem()
-        introduction_item['level'] = 1
+        introduction_item['level'] = response.meta['level']
         introduction_item['name'] = response.xpath('//h1[@class="page-header__title"]/text()').extract()
         introduction_item['avator'] = response.xpath('//img[@class="pi-image-thumbnail"]/@src').extract()
         introduction_item['main_info'] = response.xpath('//div[@id="mw-content-text"]/p[1]//text()').extract()
 
         yield introduction_item
-
-
-    def parse_level_two_pov(self, response):
-        introduction_item = IntroductionItem()
-        introduction_item['level'] = 2
-        introduction_item['name'] = response.xpath('//h1[@class="page-header__title"]/text()').extract()
-        introduction_item['avator'] = response.xpath('//img[@class="pi-image-thumbnail"]/@src').extract()
-        introduction_item['main_info'] = response.xpath('//div[@id="mw-content-text"]/p[1]//text()').extract()
-
-        yield introduction_item
-
-
 

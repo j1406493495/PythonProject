@@ -13,3 +13,7 @@ class IntroductionItem(scrapy.Item):
     name = scrapy.Field()
     avator = scrapy.Field()
     main_info = scrapy.Field()
+    # appearance = scrapy.Field()
+    # history = scrapy.Field()
+    # event = scrapy.Field()
+    # tv_show = scrapy.Field()

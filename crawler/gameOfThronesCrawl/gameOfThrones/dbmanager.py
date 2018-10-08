@@ -17,6 +17,10 @@ class Pov(BaseModel):
     name = TextField()
     avator = TextField()
     main_info = TextField()
+    # appearance = TextField()
+    # history = TextField()
+    # event = TextField()
+    # tv_show = TextField()
 
     class Meta:
         db_table = 'pov'
