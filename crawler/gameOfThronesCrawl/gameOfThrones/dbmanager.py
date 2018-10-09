@@ -19,7 +19,8 @@ class Pov(BaseModel):
     main_info = TextField()
     appearance = TextField()
     history = TextField()
-    # event = TextField()
+    event_book = TextField()
+    event_detail = TextField()
     # tv_show = TextField()
 
     class Meta:
@@ -46,9 +47,19 @@ def save_povs(item):
     else:
         history = ''
 
+    if 'event_book' in item:
+        event_book = '&&'.join(item['event_book'])
+    else:
+        event_book = ''
+
+    if 'event_detail' in item:
+        event_detail = '&&'.join(item['event_detail'])
+    else:
+        event_detail = ''
+
     with db.atomic():
         Pov.create(level=item['level'], name=name_str, avator=avator_str, main_info=main_info_str,
-            appearance=appearance, history=history)
+            appearance=appearance, history=history, event_book=event_book, event_detail=event_detail)
 
     #     for i in povs:
     #         Pov.create(**i)

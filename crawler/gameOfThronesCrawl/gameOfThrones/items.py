@@ -15,5 +15,6 @@ class IntroductionItem(scrapy.Item):
     main_info = scrapy.Field()
     appearance = scrapy.Field()
     history = scrapy.Field()
-    # event = scrapy.Field()
+    event_book = scrapy.Field()
+    event_detail = scrapy.Field()
     # tv_show = scrapy.Field()

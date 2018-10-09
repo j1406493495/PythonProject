@@ -22,6 +22,7 @@ class NameSpider(scrapy.Spider):
             introduction_url = prefix_url + href
             yield scrapy.Request(introduction_url, meta={'level':2}, callback=self.parse_pov)
 
+    #解析人物简要信息
     def parse_pov(self, response):
         introduction_item = IntroductionItem()
         introduction_item['level'] = response.meta['level']
@@ -32,6 +33,7 @@ class NameSpider(scrapy.Spider):
 
         yield introduction_item
 
+    #解析人物详细信息页
     def parse_detail(self, response, introduction_item):
         detail_title = response.xpath(self.detail_div_xpath + '/h2//text()').extract()
         print('detail_title ===== ', detail_title)
@@ -50,8 +52,15 @@ class NameSpider(scrapy.Spider):
                 introduction_item['history'] = history
                 print('history ==== ' + str(history))
             elif '近期事件' in title:
-                print('event ==== ')
+                event_book = self.get_event_book(response, index + 1)
+                introduction_item['event_book'] = event_book
+                print('event_book === ' + str(event_book))
 
+                event_detail = self.get_event_detail(response, index + 1)
+                introduction_item['event_detail'] = event_detail
+                print('event_detail ==== ' + str(event_detail))
+
+    #A节点后数据，A+1节点前数据的交叉部分
     def get_detail_info(self, response, index):
         detail_after = response.xpath(
             self.detail_div_xpath + '/h2[' + str(index) + ']/following-sibling::p//text()').extract()
@@ -64,6 +73,49 @@ class NameSpider(scrapy.Spider):
         detail_before = ''.join(detail_before)
         detail_before = detail_before.split('\n')
 
-        detail = [
-            after for after in detail_after if after in detail_before]
+        detail = [after for after in detail_after if after in detail_before]
         return detail
+
+    #近期事件书籍title
+    def get_event_book(self, response, index):
+        book_after = response.xpath(
+            self.detail_div_xpath + '/h2[' + str(index) + ']/following-sibling::h3//text()').extract()
+        book_before = response.xpath(
+            self.detail_div_xpath + '/h2[' + str(index + 1) + ']/preceding-sibling::h3//text()').extract()
+
+        book = [after for after in book_after if after in book_before]
+        return book
+
+    #近期事件书籍详情
+    def get_event_detail(self, response, index):
+        book_title = response.xpath(self.detail_div_xpath + '/h3//text()').extract()
+        print('book_title === ' + str(book_title))
+        book_count = len(book_title)
+        book_detail = []
+
+        for book_index, book in enumerate(book_title):
+            if book in ['权力的游戏', '列王的纷争', '冰雨的风暴', '群鸦的盛宴', '魔龙的狂舞', '凛冬的寒风']:
+                    book_detail.append(self.get_book_detail_info(response, book_count, book_index + 1, index))
+
+        return book_detail
+
+    #B节点后数据，B+1节点前书籍详情数据的交叉部分
+    def get_book_detail_info(self, response, book_count, book_index, index):
+        book_detail_after = response.xpath(
+            self.detail_div_xpath + '/h3[' + str(book_index) + ']/following-sibling::p//text()').extract()
+
+        if book_index < book_count:
+            book_detail_before = response.xpath(
+                self.detail_div_xpath + '/h3[' + str(book_index + 1) + ']/preceding-sibling::p//text()').extract()
+        else:
+            book_detail_before = response.xpath(
+                self.detail_div_xpath + '/h2[' + str(index + 1) + ']/preceding-sibling::p//text()').extract()
+
+        book_detail_after = ''.join(book_detail_after)
+        book_detail_after = book_detail_after.split('\n')
+
+        book_detail_before = ''.join(book_detail_before)
+        book_detail_before = book_detail_before.split('\n')
+
+        book_detail = [after for after in book_detail_after if after in book_detail_before]
+        return ''.join(book_detail)
