@@ -1,19 +1,18 @@
 import scrapy
+import re
 from ..items import *
 
 
 class NameSpider(scrapy.Spider):
     name = 'main_spider'
     start_urls = ['http://zh.asoiaf.wikia.com/wiki/Portal:%E4%BA%BA%E7%89%A9']
-
+    detail_div_xpath = '//div[@id="mw-content-text"]'
 
     def parse(self, response):
         prefix_url = 'http://zh.asoiaf.wikia.com'
 
         level_one_pov_hrefs = response.xpath('//tr/td[text()="主要POV"]/../td[2]/a/@href').extract()
-        print('level one === ' + str(level_one_pov_hrefs))
         level_two_pov_hrefs = response.xpath('//tr/td[text()="次要POV"]/../td[2]/a/@href').extract()
-        print('level two === ' + str(level_two_pov_hrefs))
 
         for href in level_one_pov_hrefs:
             introduction_url = prefix_url + href
@@ -23,13 +22,48 @@ class NameSpider(scrapy.Spider):
             introduction_url = prefix_url + href
             yield scrapy.Request(introduction_url, meta={'level':2}, callback=self.parse_pov)
 
-
     def parse_pov(self, response):
         introduction_item = IntroductionItem()
         introduction_item['level'] = response.meta['level']
         introduction_item['name'] = response.xpath('//h1[@class="page-header__title"]/text()').extract()
         introduction_item['avator'] = response.xpath('//img[@class="pi-image-thumbnail"]/@src').extract()
-        introduction_item['main_info'] = response.xpath('//div[@id="mw-content-text"]/p[1]//text()').extract()
+
+        self.parse_detail(response, introduction_item)
 
         yield introduction_item
 
+    def parse_detail(self, response, introduction_item):
+        detail_title = response.xpath(self.detail_div_xpath + '/h2//text()').extract()
+        print('detail_title ===== ', detail_title)
+
+        for index, title in enumerate(detail_title):
+            if index == 0:
+                introduction_item['main_info'] = response.xpath(self.detail_div_xpath + '/h2[1]/preceding-sibling::p//text()').extract()
+                print('main_info ==== ' + str(introduction_item['main_info']))
+
+            if '外貌' in title:
+                appearance = self.get_detail_info(response, index + 1)
+                introduction_item['appearance'] = appearance
+                print('appearance === ' + str(appearance))
+            elif '历史' in title:
+                history = self.get_detail_info(response, index + 1)
+                introduction_item['history'] = history
+                print('history ==== ' + str(history))
+            elif '近期事件' in title:
+                print('event ==== ')
+
+    def get_detail_info(self, response, index):
+        detail_after = response.xpath(
+            self.detail_div_xpath + '/h2[' + str(index) + ']/following-sibling::p//text()').extract()
+        detail_before = response.xpath(
+            self.detail_div_xpath + '/h2[' + str(index + 1) + ']/preceding-sibling::p//text()').extract()
+
+        detail_after = ''.join(detail_after)
+        detail_after = detail_after.split('\n')
+
+        detail_before = ''.join(detail_before)
+        detail_before = detail_before.split('\n')
+
+        detail = [
+            after for after in detail_after if after in detail_before]
+        return detail
