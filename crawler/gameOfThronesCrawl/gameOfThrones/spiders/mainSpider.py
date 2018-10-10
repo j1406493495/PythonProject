@@ -36,29 +36,23 @@ class NameSpider(scrapy.Spider):
     #解析人物详细信息页
     def parse_detail(self, response, introduction_item):
         detail_title = response.xpath(self.detail_div_xpath + '/h2//text()').extract()
-        print('detail_title ===== ', detail_title)
 
         for index, title in enumerate(detail_title):
             if index == 0:
                 introduction_item['main_info'] = response.xpath(self.detail_div_xpath + '/h2[1]/preceding-sibling::p//text()').extract()
-                print('main_info ==== ' + str(introduction_item['main_info']))
 
             if '外貌' in title:
                 appearance = self.get_detail_info(response, index + 1)
                 introduction_item['appearance'] = appearance
-                print('appearance === ' + str(appearance))
             elif '历史' in title:
                 history = self.get_detail_info(response, index + 1)
                 introduction_item['history'] = history
-                print('history ==== ' + str(history))
             elif '近期事件' in title:
                 event_book = self.get_event_book(response, index + 1)
                 introduction_item['event_book'] = event_book
-                print('event_book === ' + str(event_book))
 
                 event_detail = self.get_event_detail(response, index + 1)
                 introduction_item['event_detail'] = event_detail
-                print('event_detail ==== ' + str(event_detail))
 
     #A节点后数据，A+1节点前数据的交叉部分
     def get_detail_info(self, response, index):
