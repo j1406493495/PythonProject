@@ -21,7 +21,6 @@ class Pov(BaseModel):
     history = TextField()
     event_book = TextField()
     event_detail = TextField()
-    # tv_show = TextField()
 
     class Meta:
         db_table = 'pov'
