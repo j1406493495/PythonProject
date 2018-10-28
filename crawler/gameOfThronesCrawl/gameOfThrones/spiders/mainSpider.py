@@ -13,6 +13,10 @@ class NameSpider(scrapy.Spider):
 
         level_one_pov_hrefs = response.xpath('//tr/td[text()="主要POV"]/../td[2]/a/@href').extract()
         level_two_pov_hrefs = response.xpath('//tr/td[text()="次要POV"]/../td[2]/a/@href').extract()
+        classify_grage = response.xpath('//tr').extract()
+        classify_region = response.xpath('//tr').extract()
+        classify_organization = response.xpath('//tr').extract()
+        classify_family = response.xpath('//tr').extract()
 
         for href in level_one_pov_hrefs:
             introduction_url = prefix_url + href
